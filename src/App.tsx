@@ -14,13 +14,27 @@ function App() {
 
     if (gl === undefined) {
       // To-do: Create a popup to alert user that WebGL2 is not supported
-      console.log("WebGL2 not supported is supported");
       return;
     }
-    createTriangle(gl);
+    const positions = createCubePosition({ x: 0, y: 0, z: 0 }, 10);
+    const positions1 = createCubePosition({ x: 0, y: 0, z: 0 }, 0.5);
+    createCube(gl, positions);
+    createCube(gl, positions1);
   }, [gl]);
 
-  const createTriangle = (gl: WebGL2RenderingContext) => {
+  type Point = {
+    x: number;
+    y: number;
+    z: number;
+  };
+
+  const createCubePosition = (point: Point, size: number) => {
+    const triangleOne = [0, 0, 0.5 + size, 0, 0, 0.5 + size];
+
+    return triangleOne;
+  };
+
+  const createCube = (gl: WebGL2RenderingContext, positions: Array<number>) => {
     const program = createProgram(gl, vertexShaderSource, fragmentShaderSource);
     const positionAttributeLocation = gl.getAttribLocation(
       program,
@@ -36,7 +50,6 @@ function App() {
     gl.enableVertexAttribArray(positionAttributeLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-    const positions = [0, 0, 0, 0.5, 0.7, 0, 0.7, 0, 0.7, 0.5, 0, 0.5];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
     const size = 2;

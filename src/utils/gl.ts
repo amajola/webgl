@@ -1,3 +1,5 @@
+import { multiply, translationItems } from "../shaders/math";
+
 enum ShaderType {
   VERTEX = WebGLRenderingContext.VERTEX_SHADER,
   FRAGMENT_SHADER = WebGLRenderingContext.FRAGMENT_SHADER,
@@ -38,7 +40,6 @@ export const createProgram = (
   );
   gl.linkProgram(program);
   const success = gl.getProgramParameter(program, gl.LINK_STATUS);
-  console.log(success);
 
   if (success) return program;
   else {
@@ -64,11 +65,19 @@ export const draw = (
 
   gl.bindVertexArray(voa);
 
+  const matrix = multiply(
+    translationItems.translation(-0.5, -0.5),
+    translationItems.scaling(10, 10)
+  );
+  
+  const matrixLocation = gl.getUniformLocation(program, "u_matrix");
+  gl.uniformMatrix3fv(matrixLocation, false, matrix.flat());
+
   // Draw the geometry.
   // draw
   const primitiveType = gl.TRIANGLES;
   const offset = 0;
-  const count = 6;
+  const count = 3;
   gl.drawArrays(primitiveType, offset, count);
 };
 
