@@ -1,5 +1,3 @@
-import { multiply, translationItems } from "../shaders/math";
-
 enum ShaderType {
   VERTEX = WebGLRenderingContext.VERTEX_SHADER,
   FRAGMENT_SHADER = WebGLRenderingContext.FRAGMENT_SHADER,
@@ -47,38 +45,6 @@ export const createProgram = (
     gl.deleteProgram(program);
     throw new Error(`Error linking shaders: ${infoLog}`);
   }
-};
-
-export const draw = (
-  gl: WebGL2RenderingContext,
-  program: WebGLProgram,
-  voa: WebGLVertexArrayObject
-) => {
-  // To-do: Figure out how to do the resize
-  // resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement);
-
-  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-  gl.clearColor(0, 0, 0, 1);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  gl.useProgram(program);
-
-  gl.bindVertexArray(voa);
-
-  const matrix = multiply(
-    translationItems.translation(-0.5, -0.5),
-    translationItems.scaling(10, 10)
-  );
-  
-  const matrixLocation = gl.getUniformLocation(program, "u_matrix");
-  gl.uniformMatrix3fv(matrixLocation, false, matrix.flat());
-
-  // Draw the geometry.
-  // draw
-  const primitiveType = gl.TRIANGLES;
-  const offset = 0;
-  const count = 3;
-  gl.drawArrays(primitiveType, offset, count);
 };
 
 export const glsl = (x: TemplateStringsArray) => x[0];

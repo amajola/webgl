@@ -1,18 +1,24 @@
 import { glsl } from "../utils/gl";
 
 export const vertexShaderSource = glsl`#version 300 es
- 
+
 // an attribute is an input (in) to a vertex shader.
 // It will receive data from a buffer
 in vec4 a_position;
-uniform mat3 u_matrix;
- 
+in vec4 a_color;
+
+// A matrix to transform the positions by
+uniform mat4 u_matrix;
+
+// a varying the color to the fragment shader
+out vec4 v_color;
+
 // all shaders have a main function
 void main() {
-  // Apply the transformation matrix to the position
-  vec2 position = (u_matrix * vec3(a_position.xy, 1)).xy;
+  // Multiply the position by the matrix.
+  gl_Position = u_matrix * a_position;
 
-  // Set the transformed position as the output
-  gl_Position = vec4(position, a_position.zw);
+  // Pass the color to the fragment shader.
+  v_color = a_color;
 }
 `;
